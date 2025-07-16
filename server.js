@@ -8,10 +8,13 @@ const adminRoutes = require('./src/routes/admin.routes');
 const swaggerUI = require('swagger-ui-express');
 const swaggerSpec = require('./src/docs/swagger/swagger.js');
 
+const cors = require('cors');
+
 const app = express();
 createConnection;
 const PORT = process.env.PORT;
 
+app.use(cors());
 app.use(express.json());
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 

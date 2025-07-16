@@ -1,19 +1,33 @@
 const swaggerJSDoc = require('swagger-jsdoc');
+const path = require('path');
 
-const swaggerDefinition = {
-openapi: '3.0.0',
-info: {
-title: 'Upload API',
-version: '1.0.0',
-description: 'Api for images upload',
-},
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API UPLOAD NODE-JS',
+      version: '1.0.0',
+      description: 'Upload api with node js',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3030',
+      },
+    ],
+  },
+  apis: [path.resolve(__dirname, '../../routes/*.js')],
 };
 
-const options = {
-swaggerDefinition,
-apis: ['../src/routes/*.js'],
-};
+swaggerOptions.swaggerDefinition.components = {
+    securitySchemes: {
+    bearerAuth: {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    },
+  },
+}
 
-const swaggerSpec = swaggerJSDoc(options);
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 module.exports = swaggerSpec;
 
