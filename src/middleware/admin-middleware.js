@@ -2,7 +2,6 @@
 const adminMiddleware = (req,res,next) => {
 
     const userInfo = req.userInfo;
-    console.log(userInfo.role)
 
     if(userInfo.role != 'admin'){
         return res.status(404).json({
