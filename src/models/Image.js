@@ -15,3 +15,5 @@ const imageSchema = mongoose.Schema({
         required:true
     }
 },{timestamp:true})
+
+module.exports = mongoose.Model('Image',imageSchema);
