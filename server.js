@@ -4,6 +4,7 @@ const createConnection = require('./src/database/db.js');
 const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/user.routes');
 const adminRoutes = require('./src/routes/admin.routes');
+const imagesRoutes = require('./src/routes/images.routes.js');
 
 const swaggerUI = require('swagger-ui-express');
 const swaggerSpec = require('./src/docs/swagger/swagger.js');
@@ -21,6 +22,7 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use('/api/auth',authRoutes);
 app.use('/api/user',userRoutes);
 app.use('/api/admin',adminRoutes);
+app.use('/api/images',imagesRoutes);
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
