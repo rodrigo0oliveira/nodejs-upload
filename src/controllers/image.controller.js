@@ -1,5 +1,6 @@
-const { uploadCloudinary } = require('../config/cloudinary.js');
-const { uploadImageService } = require('../services/image-service.js');
+const { uploadCloudinary } = require('../helpers/cloudinaryHelper.js');
+const { uploadImageService,fetchImagesService } = require('../services/image-service.js');
+const fs = require('fs');
 
 const uploadImage = async(req,res) =>{
     try{
@@ -15,13 +16,16 @@ const uploadImage = async(req,res) =>{
 
         const {url,publicId} = await uploadCloudinary(req.file.path);
 
-        const resultImage = uploadImageService(url,publicId,req.userInfo.userId);
+        const resultImage = await uploadImageService(url,publicId,req.userInfo.userId);
 
         res.status(202).send({
             success:true,
             message:"Message uploaded!",
             image:resultImage
         })
+
+        //delete from local
+        fs.unlinkSync(path.file.path);
 
     }catch(error){
         console.error(error);
@@ -31,6 +35,33 @@ const uploadImage = async(req,res) =>{
     }
 }
 
+const fetchImages = async(req,res)=>{
+    try{
+        const images = await fetchImagesService();
+
+        if(!images){
+        res.status(204).send({
+            success:true,
+            message:"No one image was found!"
+            })
+            return;
+        }
+
+        res.status(200).send({
+        success:true,
+        data:images
+        });
+    }
+    catch(error){
+        res.status(500).send({
+            success:false,
+            message:"Error was found, please try again!"
+        })
+    }
+    
+}
+
 module.exports = {
-    uploadImage
+    uploadImage,
+    fetchImages
 }

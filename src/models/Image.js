@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const imageSchema = mongoose.Schema({
+const imageSchema = new mongoose.Schema({
     url:{
         type:String,
         required:true
@@ -14,6 +14,6 @@ const imageSchema = mongoose.Schema({
         ref:'User',
         required:true
     }
-},{timestamp:true})
+},{timestamps:true})
 
-module.exports = mongoose.Model('Image',imageSchema);
+module.exports = mongoose.model('Image',imageSchema);
