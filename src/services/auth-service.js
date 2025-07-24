@@ -37,6 +37,10 @@ async function encriptPassword(password){
 async function isPasswordMatch(email,password){
     const user = await User.findOne({email:email});
 
+    if(!user){
+        throw new Error(`User not find User: {user}`);
+    }
+
     return await bcrypt.compare(password,user.password);
 }
 
@@ -56,9 +60,38 @@ async function createToken(email){
     return accessToken;
 }
 
+const updatePassword = async(newPassowrd,userId)=>{
+    const user = await User.findOne({_id:userId});
+    console.log(user);
+    
+    if(user){
+        const isEqualsToOldPassword = await isPasswordMatch(user.email,newPassowrd);
+
+        if(isEqualsToOldPassword){
+            console.log(isEqualsToOldPassword);
+            throw new Error({
+                message:"The new passowrd cannot be equals to old password"
+            });
+        }
+
+        const newEncriptPassword = await encriptPassword(newPassowrd);
+        user.password = newEncriptPassword;
+
+        await user.save();
+
+        return "Password updated successfuly!";
+    }
+
+    throw new Error({
+        message:
+        "User not found!"
+    });
+}
+
 module.exports = {
     verifyIfEmailExists,
     createUser,
     isPasswordMatch,
-    createToken
+    createToken,
+    updatePassword
 }
