@@ -19,7 +19,18 @@ const fetchImagesService = async()=>{
     return images;
 }
 
+const deleteImageService = async(publicId)=>{
+    const {deletedCount} = await Image.deleteOne({publicId:publicId});
+
+    if(!deletedCount){
+        throw new Error("Image not found with id: "+publicId);
+    }
+
+    return "Imagem deletada com sucesso!";
+}
+
 module.exports = {
     uploadImageService,
-    fetchImagesService
+    fetchImagesService,
+    deleteImageService
 }

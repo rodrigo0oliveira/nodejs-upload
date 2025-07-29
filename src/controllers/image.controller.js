@@ -1,5 +1,5 @@
 const { uploadCloudinary } = require('../helpers/cloudinaryHelper.js');
-const { uploadImageService,fetchImagesService } = require('../services/image-service.js');
+const { uploadImageService,fetchImagesService,deleteImageService } = require('../services/image-service.js');
 const fs = require('fs');
 
 const uploadImage = async(req,res) =>{
@@ -61,7 +61,26 @@ const fetchImages = async(req,res)=>{
     
 }
 
+const deleteImage = async (req,res)=>{
+    try{
+
+        const {publicId} = req.body;
+
+        await deleteImageService(publicId);
+
+        res.status(204).send();
+
+
+    }catch(error){
+        res.status(400).send({
+            success:false,
+            message:error.message
+        });
+    }
+}
+
 module.exports = {
     uploadImage,
-    fetchImages
+    fetchImages,
+    deleteImage
 }
