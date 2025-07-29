@@ -69,7 +69,29 @@ const login = async (req,res) =>{
     }
 }
 
+const updatePassword = async(req,res)=>{
+    try {
+        const userId = req.userInfo.userId;
+
+        const {newPassword} = req.body;
+
+        const message = await authService.updatePassword(newPassword,userId);
+
+        res.status(200).send({
+            success:true,
+            message:message
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
+
 module.exports = {
     register,
-    login
+    login,
+    updatePassword
 }

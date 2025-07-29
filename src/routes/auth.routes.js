@@ -1,5 +1,6 @@
 const express = require('express');
-const { register, login } = require('../controllers/auth-controller');
+const { register, login,updatePassword } = require('../controllers/auth.controller');
+const authMiddleware = require('../middleware/auth-middleware');
 
 
 const router = express.Router();
@@ -79,5 +80,8 @@ router.post('/register',register);
  *         description: Internal Server Error!
  */
 router.post('/login', login);
+
+
+router.put('/updatePassword',authMiddleware,updatePassword);
 
 module.exports = router;
