@@ -27,3 +27,5 @@ app.use('/api/images',imagesRoutes);
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
 })
+
+module.exports = app;

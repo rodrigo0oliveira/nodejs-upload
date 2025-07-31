@@ -1,14 +1,15 @@
-jest.mock('../../models/User.js',()=> ({ 
+jest.mock('../../../models/User.js',()=> ({ 
     findOne: jest.fn(),
     save: jest.fn(),
 }));
 
-jest.mock('../../helpers/utils/passwordUtils.js',()=>({
+jest.mock('../../../helpers/utils/passwordUtils.js',()=>({
     isPasswordMatch:jest.fn(),
+    encriptPassword:jest.fn()
 }))
 
-const authService = require('../../services/auth-service.js');
-const  User = require('../../models/User.js');
+const authService = require('../../../services/auth-service.js');
+const  User = require('../../../models/User.js');
 
 
 const email = 'test@gmail.com';
