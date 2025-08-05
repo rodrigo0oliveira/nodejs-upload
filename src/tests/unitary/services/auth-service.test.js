@@ -72,6 +72,6 @@ describe('Auth service tests',()=>{
 
         authService.isPasswordMatch.mockResolvedValue(true);
 
-        await expect(authService.updatePassword('1234',1)).rejects.toThrow(new Error('The new passowrd cannot be equals to old password'));
+        await expect(authService.updatePassword('1234',1)).rejects.toThrow(new Error('The new password cannot be equals to old password'));
     });
 });

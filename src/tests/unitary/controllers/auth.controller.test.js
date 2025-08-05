@@ -1,5 +1,7 @@
 jest.mock('../../../services/auth-service.js');
 jest.mock('../../../database/db.js',()=> jest.fn());
+jest.mock('../../../middleware/auth-middleware',()=>
+     require('../../__mocks__/middleware/auth-middleware-mock'));
 
 const request = require('supertest');
 const server = require('../../../../server');
@@ -7,7 +9,7 @@ const authService = require('../../../services/auth-service');
 
 describe('Auth controller test',()=>{
 
-    test('Test /login when email and password should be succesfull',async ()=>{
+    test('Test login when email and password should be succesfull',async ()=>{
         const mockToken = "tokenMock";
 
         authService.verifyIfEmailExists.mockResolvedValue(true);
@@ -25,7 +27,7 @@ describe('Auth controller test',()=>{
         expect(response.body.success).toBe(true);
     });
     
-    test('Test /login when password are wrong should not be succesfull',async ()=>{
+    test('Test login when password are wrong should not be succesfull',async ()=>{
 
         authService.verifyIfEmailExists.mockResolvedValue(true);
         authService.isPasswordMatch.mockResolvedValue(false);
@@ -42,7 +44,7 @@ describe('Auth controller test',()=>{
         expect(response.body.message).toEqual('Invalid e-mail or password!');
     });
     
-    test('Test /register when email already exists should not be succesfull',async ()=>{
+    test('Test register when email already exists should not be succesfull',async ()=>{
         authService.verifyIfEmailExists.mockResolvedValue(true);
 
         const response = await request(server)
@@ -57,7 +59,7 @@ describe('Auth controller test',()=>{
         expect(response.body.message).toEqual('Email already exists,try with another email adress');
     })
 
-    test('Test /register when all information is right should be successfull',async ()=>{
+    test('Test register when all information is right should be successfull',async ()=>{
         authService.verifyIfEmailExists.mockResolvedValue(false);
         authService.createUser.mockResolvedValue({username:'user',email:'email@gmail'});
 
@@ -71,6 +73,34 @@ describe('Auth controller test',()=>{
                                 .expect(201);
 
         expect(response.body.message).toEqual('User created with success');
+    });
+
+    test('Test updatePassword when information are right should update password',async ()=>{
+        authService.updatePassword.mockResolvedValue("Password updated successfuly!");
+
+        const response = await request(server)
+                                .put("/api/auth/updatePassword")
+                                .send({
+                                    newPassword:"1234"
+                                })
+                                .expect(200);
+        
+        expect(response.body.success).toEqual(true);
+    });
+
+    test('Test updatePassword when password is equal to old password should throw error',async ()=>{
+        authService.updatePassword.mockImplementation(()=>{
+            throw new Error("The new password cannot be equals to old password");
+        });
+
+        const response = await request(server)
+                                .put("/api/auth/updatePassword")
+                                .send({
+                                    newPassword:"oldPassword"
+                                })
+                                .expect(500);
+        
+        expect(response.body.success).toEqual(false);
     });
 
 });

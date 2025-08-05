@@ -48,7 +48,7 @@ const updatePassword = async(newPassowrd,userId)=>{
     if(user){
 
         if(await isPasswordMatch(user.email,newPassowrd)){
-            throw new Error("The new passowrd cannot be equals to old password");
+            throw new Error("The new password cannot be equals to old password");
         }
 
         const newEncriptPassword = await encriptPassword(newPassowrd);
