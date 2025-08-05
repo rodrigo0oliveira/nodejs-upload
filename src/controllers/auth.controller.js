@@ -46,7 +46,7 @@ const login = async (req,res) =>{
         const matchPassword = await authService.isPasswordMatch(email,password);
 
         if(!emailExists || !matchPassword){
-            res.staus(400).json({
+            res.status(400).json({
                 success:false,
                 message:`Invalid e-mail or password!`
             });
@@ -61,7 +61,6 @@ const login = async (req,res) =>{
         });
         
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             success:false,
             message:error.message
@@ -77,7 +76,7 @@ const updatePassword = async(req,res)=>{
 
         const message = await authService.updatePassword(newPassword,userId);
 
-        res.status(200).send({
+        return res.status(200).send({
             success:true,
             message:message
         })
