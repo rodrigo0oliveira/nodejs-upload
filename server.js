@@ -2,8 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const createConnection = require('./src/database/db.js');
 const authRoutes = require('./src/routes/auth.routes');
-const userRoutes = require('./src/routes/user.routes');
-const adminRoutes = require('./src/routes/admin.routes');
 const imagesRoutes = require('./src/routes/images.routes.js');
 
 const swaggerUI = require('swagger-ui-express');
@@ -20,8 +18,6 @@ app.use(express.json());
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 app.use('/api/auth',authRoutes);
-app.use('/api/user',userRoutes);
-app.use('/api/admin',adminRoutes);
 app.use('/api/images',imagesRoutes);
 
 app.listen(PORT,()=>{
