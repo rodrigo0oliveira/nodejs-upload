@@ -1,7 +1,9 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { isPasswordMatch,encriptPassword } = require('../helpers/utils/passwordUtils');
+const AuthenticationError = require('../errors/authentication/AuthenticationError');
+const BadRequest = require('../errors/BadRequest.js');
+const UserNotFound = require('../errors/user/UserNotFound.js');
 
 async function verifyIfEmailExists(email) {
     const user = await User.findOne({email:email})
@@ -19,11 +21,15 @@ async function createUser(username,password,email,role) {
         email:email,
         password:hashedPassword,
         role:role
-    })
+    });
 
-    await newUser.save();
+    const user = await newUser.save();
 
-    return newUser;
+    if(!user){
+        throw new Error("User not created,please try again");
+    }
+
+    return user;
 }
 
 async function createToken(email){
@@ -48,7 +54,7 @@ const updatePassword = async(newPassowrd,userId)=>{
     if(user){
 
         if(await isPasswordMatch(user.email,newPassowrd)){
-            throw new Error("The new password cannot be equals to old password");
+            throw new BadRequest("The password cannot be equals to old password");
         }
 
         const newEncriptPassword = await encriptPassword(newPassowrd);
@@ -59,7 +65,13 @@ const updatePassword = async(newPassowrd,userId)=>{
         return "Password updated successfuly!";
     }
 
-    throw new Error("User not found!");
+    throw new UserNotFound();
+}
+
+const verifyEmailAndPassword = (email,password) => {
+    if(!email || !password){
+        throw new AuthenticationError("Email or password invalid");
+    }
 }
 
 module.exports = {
@@ -67,5 +79,6 @@ module.exports = {
     createUser,
     isPasswordMatch,
     createToken,
-    updatePassword
+    updatePassword,
+    verifyEmailAndPassword
 }

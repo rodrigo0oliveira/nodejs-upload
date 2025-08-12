@@ -2,7 +2,7 @@ const { uploadCloudinary } = require('../helpers/cloudinaryHelper.js');
 const { uploadImageService,fetchImagesService,deleteImageService } = require('../services/image-service.js');
 const fs = require('fs');
 
-const uploadImage = async(req,res) =>{
+const uploadImage = async(req,res,next) =>{
     try{
 
         const file = req.file;
@@ -24,44 +24,36 @@ const uploadImage = async(req,res) =>{
             image:resultImage
         })
 
-        //delete from local
         fs.unlinkSync(path.file.path);
 
     }catch(error){
-        console.error(error);
-        res.status(500).send(
-            {message:error}
-        );
+        next(error);
     }
 }
 
-const fetchImages = async(req,res)=>{
+const fetchImages = async(req,res,next)=>{
     try{
         const images = await fetchImagesService();
 
         if(!images){
-        res.status(204).send({
+            return res.status(204).send({
             success:true,
             message:"No one image was found!"
             })
-            return;
         }
 
         res.status(200).send({
-        success:true,
-        data:images
+            success:true,
+            data:images
         });
     }
-    catch(error){
-        res.status(500).send({
-            success:false,
-            message:"Error was found, please try again!"
-        })
+    catch(error){;
+        next(error);
     }
     
 }
 
-const deleteImage = async (req,res)=>{
+const deleteImage = async (req,res,next)=>{
     try{
 
         const {publicId} = req.body;
@@ -72,10 +64,7 @@ const deleteImage = async (req,res)=>{
 
 
     }catch(error){
-        res.status(400).send({
-            success:false,
-            message:error.message
-        });
+        next(error);
     }
 }
 

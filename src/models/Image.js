@@ -3,16 +3,16 @@ const mongoose = require('mongoose');
 const imageSchema = new mongoose.Schema({
     url:{
         type:String,
-        required:true
+        required:[true,"Image url is necessary!"]
     },
     publicId:{
         type:String,
-        required:true
+        required:[true,"publicId image url is necessary!"]
     },
     uploadedBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
-        required:true
+        required:[true,"uploadedBy is necessary!"]
     }
 },{timestamps:true})
 
