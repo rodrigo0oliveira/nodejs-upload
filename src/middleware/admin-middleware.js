@@ -1,16 +1,20 @@
+const AuthenticationError = require("../errors/authentication/AuthenticationError");
+const logError = require("../helpers/utils/erros");
 
 const adminMiddleware = (req,res,next) => {
+    try {
+        const userInfo = req.userInfo;
 
-    const userInfo = req.userInfo;
+        if(userInfo.role != 'admin'){
+            throw new AuthenticationError("Acess denied, you need a admin acess!");
+        }
 
-    if(userInfo.role != 'admin'){
-        return res.status(404).json({
-            success:false,
-            message:"Acess denied, you need a admin acess!"
-        })
+        next();
+    } catch (error) {
+        next(error);
     }
 
-    next();
+    
 }
 
 module.exports = adminMiddleware;

@@ -1,8 +1,6 @@
 const authService = require('../services/auth-service');
 
-
-//register controller
-const register = async (req,res) =>{
+const register = async (req,res,next) =>{
     try {
         const {username,email,password,role} = req.body;
 
@@ -15,42 +13,25 @@ const register = async (req,res) =>{
 
         const userCreated = await authService.createUser(username,password,email,role);
 
-        if(userCreated){
-            res.status(201).json({
-                success:true,
-                message:'User created with success'
-            })
-        }else{
-            res.status(400).json({
-                success:true,
-                message:'User can not be created!'
-            })
-        }
+        res.status(201).json({
+            success:true,
+            message:'User created with success',
+            user:userCreated
+        });
           
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            success:false,
-            error: error.message
-        })
+        next(error);
     }
 }
 
-
-//login controller
-const login = async (req,res) =>{
+const login = async (req,res,next) =>{
     try {
         const {email,password} = req.body;
 
         const emailExists = await authService.verifyIfEmailExists(email);
         const matchPassword = await authService.isPasswordMatch(email,password);
 
-        if(!emailExists || !matchPassword){
-            res.status(400).json({
-                success:false,
-                message:`Invalid e-mail or password!`
-            });
-        }
+        authService.verifyEmailAndPassword(emailExists,matchPassword);
 
         const token = await authService.createToken(email);
 
@@ -61,14 +42,11 @@ const login = async (req,res) =>{
         });
         
     } catch (error) {
-        res.status(500).json({
-            success:false,
-            message:error.message
-        })
-    }
+        next(error);
+}
 }
 
-const updatePassword = async(req,res)=>{
+const updatePassword = async(req,res,next)=>{
     try {
         const userId = req.userInfo.userId;
 
@@ -82,10 +60,7 @@ const updatePassword = async(req,res)=>{
         })
 
     } catch (error) {
-        res.status(500).json({
-            success:false,
-            message:error.message
-        })
+        next(error);
     }
 }
 

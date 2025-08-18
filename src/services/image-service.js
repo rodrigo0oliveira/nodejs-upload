@@ -13,10 +13,10 @@ const uploadImageService = async (url,publicId,uploadedBy) =>{
     return image;
 }
 
-const fetchImagesService = async()=>{
-    const images = await Image.find({});
-
-    return images;
+const fetchImagesService = (req,next)=>{
+    const images = Image.find({});
+    req.resultado = images;
+    next();
 }
 
 const deleteImageService = async(publicId)=>{
