@@ -2,7 +2,8 @@ const express = require('express');
 const { uploadImage,fetchImages,deleteImage } = require('../controllers/image.controller');
 const authMiddleware = require('../middleware/auth-middleware');
 const adminMiddleware = require('../middleware/admin-middleware');
-const multerMiddleware = require('../middleware/upload-middleware')
+const multerMiddleware = require('../middleware/upload-middleware');
+const paginationMiddleware = require('../middleware/paginationMiddleware');
 
 const router = express.Router();
 
@@ -58,7 +59,7 @@ router.post('/',authMiddleware,adminMiddleware,multerMiddleware.single('image'),
  *         description: Internal Server Error!
  *            
  */
-router.get('/',authMiddleware,fetchImages); //get images - need auth
+router.get('/',authMiddleware,fetchImages,paginationMiddleware); //get images - need auth
 
 /**
  * @swagger

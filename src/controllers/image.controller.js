@@ -33,19 +33,7 @@ const uploadImage = async(req,res,next) =>{
 
 const fetchImages = async(req,res,next)=>{
     try{
-        const images = await fetchImagesService();
-
-        if(!images){
-            return res.status(204).send({
-            success:true,
-            message:"No one image was found!"
-            })
-        }
-
-        res.status(200).send({
-            success:true,
-            data:images
-        });
+        fetchImagesService(req,next);
     }
     catch(error){;
         next(error);
